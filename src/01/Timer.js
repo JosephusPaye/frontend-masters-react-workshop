@@ -4,11 +4,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ProgressCircle } from '../ProgressCircle';
 
-// import { useMachine } from '@xstate/react';
+import { useMachine } from '@xstate/react';
 import { timerMachine } from './timerMachine';
 
+import { inspect } from '@xstate/inspect';
+
+inspect({
+  iframe: false,
+});
+
 export const Timer = () => {
-  const [state, send] = [{}, () => {}];
+  const [state, send] = useMachine(timerMachine, { devTools: true });
 
   const { duration, elapsed, interval } = {
     duration: 60,
@@ -19,7 +25,7 @@ export const Timer = () => {
   return (
     <div
       className="timer"
-      data-state={state.value} // Hint!
+      data-state={state.value}
       style={{
         // @ts-ignore
         '--duration': duration,
@@ -28,7 +34,7 @@ export const Timer = () => {
       }}
     >
       <header>
-        <h1>Exercise 01</h1>
+        <h1>Exercise 01 Solution</h1>
       </header>
       <ProgressCircle />
       <div className="display">
@@ -36,28 +42,26 @@ export const Timer = () => {
         <div
           className="elapsed"
           onClick={() => {
-            // ...
+            send({ type: 'TOGGLE' });
           }}
         >
           {Math.ceil(duration - elapsed)}
         </div>
         <div className="controls">
-          {state === 'paused' && (
-            <button
-              onClick={() => {
-                // ...
-              }}
-            >
-              Reset
-            </button>
-          )}
+          <button
+            onClick={() => {
+              send({ type: 'RESET' });
+            }}
+          >
+            Reset
+          </button>
         </div>
       </div>
       <div className="actions">
-        {state === 'running' && (
+        {state.value === 'running' && (
           <button
             onClick={() => {
-              // ...
+              send({ type: 'TOGGLE' });
             }}
             title="Pause timer"
           >
@@ -65,12 +69,12 @@ export const Timer = () => {
           </button>
         )}
 
-        {(state === 'paused' || state === 'idle') && (
+        {(state.value === 'paused' || state.value === 'idle') && (
           <button
             onClick={() => {
-              // ...
+              send({ type: 'TOGGLE' });
             }}
-            title="Start timer"
+            title={state.value === 'idle' ? 'Start timer' : 'Resume timer'}
           >
             <FontAwesomeIcon icon={faPlay} />
           </button>
