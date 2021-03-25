@@ -7,14 +7,14 @@ import { ProgressCircle } from '../ProgressCircle';
 import { useMachine } from '@xstate/react';
 import { timerMachine } from './timerMachine';
 
-import { inspect } from '@xstate/inspect';
+// import { inspect } from '@xstate/inspect';
 
-inspect({
-  iframe: false,
-});
+// inspect({
+//   iframe: false,
+// });
 
 export const Timer = () => {
-  const [state, send] = useMachine(timerMachine, { devTools: true });
+  const [state, send] = useMachine(timerMachine, { devTools: false });
 
   const { duration, elapsed, interval } = {
     duration: 60,
